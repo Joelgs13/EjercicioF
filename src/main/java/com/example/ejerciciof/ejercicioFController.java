@@ -8,11 +8,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Persona;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Controlador que maneja la ventana principal con la lista de personas.
@@ -147,6 +148,93 @@ public class ejercicioFController {
         }
 
         personTable.setItems(personasFiltradas);
+    }
+
+    /**
+     * Método que exporta la información de la tabla a un archivo CSV.
+     */
+    public void exportar(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Exportar a CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        File file = fileChooser.showSaveDialog(agregarButton.getScene().getWindow());
+
+        if (file != null) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                // Escribir cabecera
+                writer.write("Nombre,Apellidos,Edad");
+                writer.newLine();
+
+                // Escribir datos
+                for (Persona persona : personasList) {
+                    writer.write(persona.getNombre() + "," + persona.getApellido() + "," + persona.getEdad());
+                    writer.newLine();
+                }
+
+                mostrarAlerta("Exportación Exitosa", "Los datos han sido exportados a " + file.getAbsolutePath());
+            } catch (IOException e) {
+                mostrarAlerta("Error de Exportación", "No se pudo exportar el archivo: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Método que importa datos de un archivo CSV a la tabla.
+     */
+    public void importar(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Importar desde CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        File file = fileChooser.showOpenDialog(agregarButton.getScene().getWindow());
+
+        if (file != null) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                boolean firstLine = true;
+
+                while ((line = reader.readLine()) != null) {
+                    if (firstLine) {
+                        firstLine = false; // Saltar la primera línea (cabecera)
+                        continue;
+                    }
+
+                    String[] datos = line.split(",");
+
+                    // Validar que haya suficientes datos y que no estén vacíos
+                    if (datos.length == 3) {
+                        String nombre = datos[0].trim();
+                        String apellidos = datos[1].trim();
+                        Integer edad;
+
+                        // Validar edad
+                        try {
+                            edad = Integer.parseInt(datos[2].trim());
+                        } catch (NumberFormatException e) {
+                            mostrarAlerta("Error de Importación", "La edad debe ser un número: " + datos[2]);
+                            continue; // Saltar este registro
+                        }
+
+                        // Comprobar si la persona ya existe
+                        boolean existe = personasList.stream()
+                                .anyMatch(p -> p.getNombre().equalsIgnoreCase(nombre) && p.getApellido().equalsIgnoreCase(apellidos) && p.getEdad()==edad);
+
+                        if (!existe) {
+                            personasList.add(new Persona(nombre, apellidos, edad));
+                        } else {
+                            mostrarAlerta("Registro Duplicado", "La persona " + nombre + " " + apellidos + " ya existe.");
+                        }
+                    } else {
+                        mostrarAlerta("Error de Importación", "Línea inválida: " + line);
+                    }
+                }
+
+                mostrarAlerta("Importación Exitosa", "Los datos han sido importados desde " + file.getAbsolutePath());
+            } catch (IOException e) {
+                mostrarAlerta("Error de Importación", "No se pudo importar el archivo: " + e.getMessage());
+            }
+        }
     }
 }
 
