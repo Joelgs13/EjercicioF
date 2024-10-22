@@ -1,0 +1,1 @@
+A comparacion de su version anterior, este programa añade un textfield que nos permite flitrar los datos de la tabla por el nombre. Ademas, tiene funcionaldades para importar y exportar datos en formato CSV, y controla que sean correctos antes de importarlos. Ademas de eso, el FileChooser que gestiona esto, se abre automaticamente en la carpeta del proyecto.
