@@ -17,6 +17,8 @@ import java.io.*;
 
 /**
  * Controlador que maneja la ventana principal con la lista de personas.
+ * Permite agregar, modificar, eliminar y filtrar personas, así como
+ * importar y exportar datos en formato CSV.
  */
 public class ejercicioFController {
 
@@ -48,6 +50,7 @@ public class ejercicioFController {
 
     /**
      * Inicializa la tabla y vincula las columnas a los datos de las personas.
+     * Este método se llama automáticamente al inicializar la escena.
      */
     @FXML
     public void initialize() {
@@ -59,7 +62,8 @@ public class ejercicioFController {
     }
 
     /**
-     * Método que abre una ventana modal para agregar o modificar una persona dependiendo del botón que se haya pulsado.
+     * Método que abre una ventana modal para agregar o modificar una persona
+     * dependiendo del botón que se haya pulsado.
      *
      * @param event Evento disparado por los botones "Agregar Persona" o "Modificar Persona".
      */
@@ -102,6 +106,8 @@ public class ejercicioFController {
     /**
      * Método que elimina una persona seleccionada de la tabla.
      * Si no hay una persona seleccionada, muestra un mensaje de alerta.
+     *
+     * @param event Evento disparado al hacer clic en el botón de eliminar.
      */
     @FXML
     private void eliminarPersona(ActionEvent event) {
@@ -152,13 +158,14 @@ public class ejercicioFController {
 
     /**
      * Método que exporta la información de la tabla a un archivo CSV.
+     *
+     * @param actionEvent Evento disparado al hacer clic en el botón de exportar.
      */
     public void exportar(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Exportar a CSV");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
 
-        // Abrir el explorador de archivos en la carpeta del proyecto
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 
         File file = fileChooser.showSaveDialog(agregarButton.getScene().getWindow());
@@ -184,13 +191,14 @@ public class ejercicioFController {
 
     /**
      * Método que importa datos de un archivo CSV a la tabla.
+     *
+     * @param actionEvent Evento disparado al hacer clic en el botón de importar.
      */
     public void importar(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Importar desde CSV");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
 
-        // Abrir el explorador de archivos en la carpeta del proyecto
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 
         File file = fileChooser.showOpenDialog(agregarButton.getScene().getWindow());
@@ -249,3 +257,4 @@ public class ejercicioFController {
         }
     }
 }
+
