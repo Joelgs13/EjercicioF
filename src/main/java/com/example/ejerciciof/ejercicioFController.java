@@ -7,10 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Persona;
@@ -24,6 +21,9 @@ public class ejercicioFController {
 
     @FXML
     private TableView<Persona> personTable;
+
+    @FXML
+    private TextField filtrarField;
 
     @FXML
     private TableColumn<Persona, String> nombreColumn;
@@ -130,6 +130,23 @@ public class ejercicioFController {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    /**
+     * Filtra las personas en la tabla según el texto ingresado en el campo de filtro.
+     */
+    public void filtrar() {
+        String textoFiltro = filtrarField.getText().toLowerCase();
+
+        ObservableList<Persona> personasFiltradas = FXCollections.observableArrayList();
+
+        for (Persona persona : personasList) {
+            if (persona.getNombre().toLowerCase().contains(textoFiltro)) {
+                personasFiltradas.add(persona);
+            }
+        }
+
+        personTable.setItems(personasFiltradas);
     }
 }
 
