@@ -158,6 +158,9 @@ public class ejercicioFController {
         fileChooser.setTitle("Exportar a CSV");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
 
+        // Abrir el explorador de archivos en la carpeta del proyecto
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+
         File file = fileChooser.showSaveDialog(agregarButton.getScene().getWindow());
 
         if (file != null) {
@@ -187,6 +190,9 @@ public class ejercicioFController {
         fileChooser.setTitle("Importar desde CSV");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
 
+        // Abrir el explorador de archivos en la carpeta del proyecto
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+
         File file = fileChooser.showOpenDialog(agregarButton.getScene().getWindow());
 
         if (file != null) {
@@ -208,6 +214,12 @@ public class ejercicioFController {
                         String apellidos = datos[1].trim();
                         Integer edad;
 
+                        // Validar que los campos no estén vacíos
+                        if (nombre.isEmpty() || apellidos.isEmpty()) {
+                            mostrarAlerta("Error de Importación", "Los campos Nombre y Apellidos no pueden estar vacíos.");
+                            continue; // Saltar este registro
+                        }
+
                         // Validar edad
                         try {
                             edad = Integer.parseInt(datos[2].trim());
@@ -218,7 +230,7 @@ public class ejercicioFController {
 
                         // Comprobar si la persona ya existe
                         boolean existe = personasList.stream()
-                                .anyMatch(p -> p.getNombre().equalsIgnoreCase(nombre) && p.getApellido().equalsIgnoreCase(apellidos) && p.getEdad()==edad);
+                                .anyMatch(p -> p.getNombre().equalsIgnoreCase(nombre) && p.getApellido().equalsIgnoreCase(apellidos) && p.getEdad() == edad);
 
                         if (!existe) {
                             personasList.add(new Persona(nombre, apellidos, edad));
@@ -237,4 +249,3 @@ public class ejercicioFController {
         }
     }
 }
-
